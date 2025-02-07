@@ -104,7 +104,13 @@ Copyright (C) 2025 Miguel Matos Barreto
 
 ## **Contact**
 For special permissions, support, or business inquiries, contact:  
-**Email:** ***I'll add it later***  
+**Email:** ***I'll add it later***
+&nbsp;
+
 **GitHub** ***I'll add it later***
+&nbsp;
+
 **Portfolio Link** ***I'll add it later***
+&nbsp;
+
 **WebSite** ***I'll add it later***
