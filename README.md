@@ -107,10 +107,10 @@ For special permissions, support, or business inquiries, contact:
 **Email:** ***I'll add it later***
 &nbsp;
 
-**GitHub** ***I'll add it later***
+**GitHub:** ***I'll add it later***
 &nbsp;
 
-**Portfolio Link** ***I'll add it later***
+**Portfolio Link:** ***I'll add it later***
 &nbsp;
 
-**WebSite** ***I'll add it later***
+**WebSite:** ***I'll add it later***
