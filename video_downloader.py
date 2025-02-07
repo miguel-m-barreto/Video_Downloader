@@ -3,21 +3,47 @@ import argparse
 import yt_dlp
 import datetime
 
-from utils import get_timestamp_output_folder
+from utils import get_timestamp_output_folder, get_unique_output_folder
 
 DEFAULT_OUTPUT_FOLDER = "Video_download_Folder"
 
+def get_output_folder(output_folder, enable_timestamp_folder):
+    if output_folder is None:
+        if not os.path.exists(os.path.join(os.getcwd(), DEFAULT_OUTPUT_FOLDER)):
+                os.makedirs(os.path.join(os.getcwd(), DEFAULT_OUTPUT_FOLDER), exist_ok=True)
+    else:
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder, exist_ok=True)
+
+    if enable_timestamp_folder:
+        if output_folder is None:
+            # If no output folder is provided, create a timestamped folder inside the default location
+            return get_timestamp_output_folder(
+                os.path.join(
+                    os.getcwd(), 
+                    DEFAULT_OUTPUT_FOLDER))
+        else:
+            # If an output folder is provided, create a timestamped subfolder inside it
+            parent_folder_name = os.path.basename(os.path.normpath(output_folder))  # Get the last folder name
+            return get_timestamp_output_folder(os.path.join(output_folder, f"{parent_folder_name}"))
+    else:
+        if output_folder is None:
+            base_output_folder = os.path.join(
+                os.getcwd(),
+                DEFAULT_OUTPUT_FOLDER)
+            return get_unique_output_folder(base_output_folder) or base_output_folder  # Ensure a valid folder path
+        else:
+            return get_unique_output_folder(output_folder) or output_folder  # Ensure a valid folder path
+
+
 # Download a video from YouTube using yt-dlp
-def download_video(url, output_path='downloads', format='mp4', resolution='1080', audio_quality='320', allow_playlist=False, timestamp_folder=False):
-    output_path = os.path.abspath(DEFAULT_OUTPUT_FOLDER) if output_path is None else os.path.abspath(output_path)
-    
+def download_video(url, output_path=None, format='mp4', resolution='1080', audio_quality='320', allow_playlist=False, timestamp_folder=True):
+    output_path = get_output_folder(output_path, timestamp_folder)
+
     # Create the output folder if it does not exist
     if not os.path.exists(output_path):
-        os.makedirs(output_path)
-    
-    if timestamp_folder:
-        output_path = get_timestamp_output_folder(output_path)
-   
+        os.makedirs(output_path, exist_ok=True)
+
     ydl_opts = {
         'outtmpl': os.path.join(output_path, '%(title)s.%(ext)s'),
         'noplaylist': not allow_playlist  # Allow playlist download if specified
@@ -45,12 +71,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Download videos in various formats and qualities.")
     
     parser.add_argument("url", help='URL of the video to download')
-    parser.add_argument("format", choices=['mp4', 'mp3'], help="Output format (mp4/mp3)")
-    parser.add_argument("--output_folder", help="Path to the output folder", default=DEFAULT_OUTPUT_FOLDER)
+    parser.add_argument("--format", choices=['mp4', 'mp3'], help="Output format (mp4/mp3)")
+    parser.add_argument("--output_folder", help="Path to the output folder", default=None)
     parser.add_argument("--resolution", help="Resolution of the video (e.g., 2160, 1080, 720, etc.)", default='1080')
     parser.add_argument("--audio_quality", help="Audio quality of the mp3 file (e.g., 320, 192, 128)", default='320')
     parser.add_argument("--allow_playlist", help="Download playlist", action='store_true')
-    parser.add_argument("--timestamp_folder", help="Add timestamp to the output folder", action='store_true')
+    parser.add_argument("--timestamp_folder", help="Add timestamp to the output folder", action='store_false', default=True)
 
     args = parser.parse_args()
     
